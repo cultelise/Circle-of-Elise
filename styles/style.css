@@ -18,7 +18,7 @@ header {
   border: none;
   display: grid;
   grid-template-columns: 3fr 1fr 3fr;
-  font-size: 60px;
+  font-size: 70px;
   gap: calc(10px + 10%);
 }
 
@@ -27,6 +27,7 @@ header {
   justify-content: end;
   color: red;
   font-style: italic;
+  text-shadow: -0.5px 0.5px 1px black;
 }
 
 .title-word-2 {
@@ -34,11 +35,14 @@ header {
   justify-content: center;
   align-items: flex-end;
   font-size: 40px;
-  padding-bottom: 5px;
+  padding-bottom: 7px;
+  text-shadow: -20px 10px 1px gray, 20px 10px 1px gray, -20px -15px 1px gray,
+    20px -15px 1px gray;
 }
 
 .title-word-3 {
   display: flex;
+  text-shadow: -0.5px 0.5px 1px black;
 }
 
 nav {
@@ -52,6 +56,10 @@ nav {
 
 #name-1 {
   color: blue;
+  font-size: 45px;
+  display: flex;
+  align-items: center;
+  padding-bottom: 10px;
 }
 
 #name-2 {
@@ -60,6 +68,10 @@ nav {
 
 #name-3 {
   color: orange;
+  font-size: 45px;
+  display: flex;
+  align-items: center;
+  padding-bottom: 10px;
 }
 
 #name-4 {
@@ -68,4 +80,8 @@ nav {
 
 #name-5 {
   color: purple;
+  font-size: 45px;
+  display: flex;
+  align-items: center;
+  padding-bottom: 10px;
 }
