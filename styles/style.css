@@ -36,8 +36,6 @@ header {
   align-items: flex-end;
   font-size: 40px;
   padding-bottom: 7px;
-  text-shadow: -20px 10px 1px gray, 20px 10px 1px gray, -20px -15px 1px gray,
-    20px -15px 1px gray;
 }
 
 .title-word-3 {
