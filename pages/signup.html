@@ -23,33 +23,26 @@
 			</div>
 
 			<nav class="unselectable">
-				<li id="profile"><a href="">Profile</a></li>
-				<li id="records"><a href="">Records</a></li>
-				<li id="signup"><a href="./signup.html">signup</a></li>
+				<li id="profile-link"><a href="">Profile</a></li>
+				<li id="records-link"><a href="">Records</a></li>
+				<li id="altar-link"><a href="">Altar</a></li>
 
 				<li></li>
 			</nav>
 		</header>
-		<main id="main-main">
-			<div id="post-1">
-				<button id="post-button-1" class="unselectable">
-					<img
-						id="eye-closed"
-						src="/static/eye-close.svg"
-						alt=""
-						class="show"
-					/>
-					<img id="eye-open" src="/static/favicon.svg" alt="" class="hide" />
-				</button>
-
-				<div id="post-title-1">
-					<a id="post-link-1" href="">title</a>
-				</div>
-
-				<div id="post-content-1" class="hide">preview</div>
-			</div>
+		<main id="initiation-main">
+			<form id="initiation-form">
+				<label for="codename" id="codename-label">Codename</label>
+				<input type="text" name="codename" id="codename" />
+				<label for="email" id="email-label">Email</label>
+				<input type="text" name="email" />
+				<label for="password" id="password-label">Password</label>
+				<input type="text" name="password" />
+				<button id="initiation-button">Submit</button>
+			</form>
 		</main>
 		<footer></footer>
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 		<script src="../static/index.js"></script>
 	</body>
 </html>
