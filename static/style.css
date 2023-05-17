@@ -33,9 +33,9 @@ a {
 }
 
 a:hover {
+	cursor: pointer;
 	color: hsl(0, 0%, 30%);
 	text-shadow: 0px 1px 1px 1px silver;
-	/* text-decoration: underline; */
 }
 
 .hide {
@@ -127,7 +127,11 @@ nav {
 
 #main-main {
 	display: flex;
-	justify-items: stretch;
+	flex-direction: column;
+	/* justify-content: center; */
+	/* align-items: center; */
+	/* align-content: center; */
+	gap: 100px;
 	margin: 100px calc(13%) 0px calc(5%);
 	font-size: 40px;
 }
@@ -161,16 +165,15 @@ input {
 label {
 }
 
-#post-1 {
+.card {
 	flex: 1;
 	display: grid;
 	grid-template-columns: 1fr 9fr;
-	align-self: flex-start;
-	justify-items: stretch;
+	align-items: center;
 	transition: font-size 300ms, opacity 300ms;
 }
 
-#post-button-1 {
+.post-button {
 	text-align: center;
 	justify-self: center;
 	grid-row: 1 / 2;
@@ -178,15 +181,15 @@ label {
 	transition: font-size 300ms, opacity 300ms;
 }
 
-#post-title-1 {
+.title {
 	text-align: center;
 	font-size: 40px;
 	transition: font-size 300ms, opacity 300ms;
 	border: 1px solid black;
-	padding: 5px;
+	padding: 10px;
 }
 
-#post-content-1 {
+.preview {
 	grid-column: 2 / 3;
 	border: 1px solid black;
 	border-top: none;
@@ -194,7 +197,7 @@ label {
 	font-size: 30px;
 	font-style: italic;
 	font-weight: normal;
-	padding: 5px;
+	padding-bottom: 10px;
 }
 
 #opaque-layer {
@@ -222,4 +225,42 @@ label {
 	border: 1px solid black;
 	border-radius: 5px;
 	margin-top: 20px;
+}
+
+.dropdown-content {
+	display: none;
+	position: absolute;
+	font-size: 15px;
+	min-width: 100px;
+	box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+}
+
+.dropdown-content a {
+	padding: 5px 1px;
+	display: block;
+}
+
+.dropdown:hover .dropdown-content {
+	display: block;
+}
+
+#post-form {
+	display: flex;
+	flex-direction: column;
+	justify-self: center;
+	align-items: center;
+	margin: 50px 0px;
+	gap: 20px;
+}
+
+#content-button {
+	border: 1px solid black;
+	width: fit-content;
+}
+
+#post-text {
+	border: 1px solid black;
+	padding: 10px;
+	height: 400px;
+	width: 400px;
 }

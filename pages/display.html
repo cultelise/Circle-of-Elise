@@ -23,24 +23,27 @@
 			</div>
 
 			<nav class="unselectable">
-				<li id="main-link"><a href="./index.html">Main</a></li>
-				<li id="signup-link"><a href="./signup.html">Sign Up</a></li>
-				<li id="post-link"><a href="./post.html">Post</a></li>
+				<li class="dropdown">
+					<a href="">Records</a>
+					<div class="dropdown-content">
+						<a href="./signup.html" id="signup-link">Sign Up</a>
+						<a href="" id="login-link">Log In</a>
+					</div>
+				</li>
+        <li id="main-link">
+					<a href="./index.html">Main</a>
+				</li>
+				<li id="post-link">
+					<a href="./post.html">Post</a>
+				</li>
 
 				<li></li>
 			</nav>
 		</header>
-		<main id="initiation-main">
-			<form id="initiation-form">
-				<label for="codename" id="codename-label">Codename</label>
-				<input type="text" name="codename" id="codename" />
-				<label for="email" id="email-label">Email</label>
-				<input type="text" name="email" />
-				<label for="password" id="password-label">Password</label>
-				<input type="text" name="password" />
-				<button id="initiation-button">Submit</button>
-			</form>
-		</main>
+		<main>
+      <div id="display-page"></div>
+    </main>
+		</form>
 		<footer></footer>
 		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 		<script src="../static/index.js"></script>
