@@ -2,21 +2,25 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const app = express();
+const usersRouter = require('./controllers/users');
+const loginRouter = require('./controllers/login');
 
-const { PORT } = require('../utils/config');
+const { PORT } = require('./utils/config');
 console.log(PORT);
 
 app.use(cors());
 app.use(express.json());
+app.use('/users', usersRouter);
+app.use('/login', loginRouter);
 
+const { seed } = require('./controllers/seed');
 const {
-	seed,
 	getPosts,
 	getPost,
 	signUp,
 	createPost,
 	test,
-} = require('./controller');
+} = require('./controllers/posts');
 
 app.get('/display', (req, res) => {
 	res
@@ -29,8 +33,6 @@ app.get('/post/:id', getPost);
 app.get('/test', test);
 
 app.post('/seed', seed);
-
-app.post('/initiation', signUp);
 
 app.post('/post', createPost);
 

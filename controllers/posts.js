@@ -10,45 +10,6 @@ const sequelize = new Sequelize(CONNECTION_STRING, {
 });
 
 module.exports = {
-	seed: (req, res) => {
-		const query = `
-
-		DROP TABLE if exists post_tags;
-		DROP TABLE if exists posts;
-		DROP TABLE if exists tags;
-
-		CREATE TABLE posts (
-			id SERIAL PRIMARY KEY,
-			title VARCHAR(30),
-			date DATE default CURRENT_DATE,
-			time TIMESTAMP default CURRENT_TIMESTAMP,
-			preview TEXT,
-			content TEXT
-		);
-		
-		CREATE TABLE tags (
-			id SERIAL PRIMARY KEY,
-			name VARCHAR(20)
-		);
-		
-		CREATE TABLE post_tags (
-			id SERIAL PRIMARY KEY,
-			posts_id INT REFERENCES posts(id),
-			tags_id INT REFERENCES tags(id)
-		);		
-		
-		INSERT INTO posts (title, preview, content)
-		VALUES  ('test post', 'preview', 'This is a test post. blah blah blah blah blah blah blah');
-		
-		INSERT INTO tags (name)
-		VALUES	('test');
-		`;
-		sequelize
-			.query(query)
-			.then((dbRes) => res.status(200).send(dbRes[0]))
-			.catch((err) => console.log(err));
-	},
-
 	getPosts: (req, res) => {
 		let query = `
 		SELECT * FROM posts
@@ -69,11 +30,6 @@ module.exports = {
 			.query(query)
 			.then((dbRes) => res.status(200).send(dbRes[0]))
 			.catch((err) => console.log(err));
-	},
-
-	signUp: (req, res) => {
-		console.log(req.body);
-		res.status(200).send(req.body);
 	},
 
 	createPost: (req, res) => {

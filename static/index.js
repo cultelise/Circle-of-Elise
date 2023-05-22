@@ -1,5 +1,4 @@
 const mainMain = document.querySelector('#main-main');
-const post1 = document.getElementById('post-1');
 const hideBox = document.getElementById('opaque-layer');
 const initForm = document.getElementById('initiation-form');
 const initName = document.getElementById('codename');
@@ -7,7 +6,8 @@ const contentBox = document.getElementById('post-text');
 const contentButton = document.getElementById('content-button');
 const contentTitle = document.getElementById('content-title');
 const postPreview = document.getElementById('post-preview');
-
+const loginForm = document.getElementById('login-form');
+const displayPage = document.getElementById('display-page');
 const baseUrl = 'http://localhost:3000';
 
 const getPosts = async () => {
@@ -122,29 +122,36 @@ if (mainMain) {
 	createPostCards();
 }
 
-// function transferData(res, target) {
-// 	console.log(res, target);
-// }
-
-if (document.getElementById('display-page')) {
+if (displayPage) {
 	const display = async () => {
 		console.log('on the display page');
 		let id = +window.localStorage.getItem('post');
 		let response = await axios.get(`${baseUrl}/post/${id}`);
+		let post = response.data[0];
 		let postDiv = document.createElement('div');
-		let titleDiv = document.createElement('div');
+		postDiv.id = 'display-post';
+		let titleDiv = document.createElement('h1');
 		let contentDiv = document.createElement('div');
-		console.log(response.data[0]);
-		titleDiv.textContent = response.data[0].title;
+		let commentDiv = document.createElement('div');
+		let user = document.createElement('h3');
+		let commentContent = document.createElement('div');
+		console.log(post);
+		titleDiv.textContent = post.title;
+		contentDiv.textContent = post.content;
+
+		postDiv.appendChild(titleDiv);
+		postDiv.appendChild(contentDiv);
+		displayPage.appendChild(postDiv);
 	};
 	display();
 }
 
 initForm === null || initForm === void 0
 	? void 0
-	: initForm.addEventListener('submit', async () => {
-			await axios.post('http://localhost:3000/initiation', {
-				codename: initForm[0].value,
+	: initForm.addEventListener('submit', async (event) => {
+			event.preventDefault();
+			await axios.post(`${baseUrl}/users`, {
+				username: initForm[0].value,
 				email: initForm[1].value,
 				password: initForm[2].value,
 			});
@@ -161,6 +168,23 @@ contentButton === null || contentButton === void 0
 				preview: postPreview.value,
 			});
 			console.log(response.data);
+	  });
+
+loginForm === null || loginForm === void 0
+	? void 0
+	: loginForm.addEventListener('submit', (e) => {
+			e.preventDefault();
+			let body = {
+				username: loginForm[0].value,
+				password: loginForm[1].value,
+			};
+			console.log(body);
+			axios
+				.post(`${baseUrl}/login`, body)
+				.then((res) => {
+					console.log(res);
+				})
+				.catch((err) => console.log(err));
 	  });
 
 const displayHandler = (event) => {
