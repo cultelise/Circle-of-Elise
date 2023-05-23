@@ -14,7 +14,7 @@ const loginLink = document.getElementById('login-link');
 const logoutLink = document.getElementById('logout-link');
 const postLink = document.getElementById('post-link');
 const loginDisplay = document.getElementById('login-display');
-const error = document.getElementsByClassName('error');
+const error = document.getElementsByClassName('error')[0];
 
 if (localStorage.getItem('auth')) {
 	logoutLink.style.display = 'block';
@@ -225,49 +225,28 @@ if (displayPage) {
 
 		let res = await axios.get(`${baseUrl}/comments/${id}`);
 		let comments = res.data;
+		comments.forEach((comment) => {
+			let commentDiv = document.createElement('div');
 
-		let count = 0;
+			let dateDiv = document.createElement('div');
+			dateDiv.textContent = comment.date;
+			dateDiv.style.textDecoration = 'underline';
 
-		function displayComments(commentForm, commentContainer, comments) {
-			for (let i = count * 4 + 1; i < comments.length; i++) {
-				const comment = comments[i];
+			let usernameDiv = document.createElement('b');
+			usernameDiv.textContent = comment.username;
+			usernameDiv.style.fontSize = '20px';
 
-				let commentDiv = document.createElement('div');
+			let commentContent = document.createElement('div');
 
-				let dateDiv = document.createElement('div');
-				dateDiv.textContent = comment.date;
-				dateDiv.style.textDecoration = 'underline';
+			commentDiv.classList.add('comment');
+			commentContent.textContent = comment.content;
 
-				let usernameDiv = document.createElement('b');
-				usernameDiv.textContent = comment.username;
-				usernameDiv.style.fontSize = '20px';
-
-				let commentContent = document.createElement('div');
-
-				commentDiv.classList.add('comment');
-				commentContent.textContent = comment.content;
-
-				let next = document.createElement('a');
-				next.textContent = 'next';
-				next.addEventListener('click', () => {
-					displayComments(commentForm, commentContainer, comments);
-				});
-
-				commentDiv.appendChild(dateDiv);
-				commentDiv.appendChild(usernameDiv);
-				commentDiv.appendChild(commentContent);
-				commentContainer.appendChild(commentDiv);
-				commentContainer.appendChild(next);
-				commentContainer.appendChild(commentForm);
-				if (i === i + 5) {
-					count++;
-					break;
-				}
-			}
-			return commentContainer;
-		}
-
-		commentContainer = displayComments(commentForm, commentContainer, comments);
+			commentDiv.appendChild(dateDiv);
+			commentDiv.appendChild(usernameDiv);
+			commentDiv.appendChild(commentContent);
+			commentContainer.appendChild(commentDiv);
+		});
+		commentContainer.appendChild(commentForm);
 
 		titleDiv.textContent = post.title;
 		contentDiv.textContent = post.content;
@@ -304,19 +283,37 @@ initForm === null || initForm === void 0
 
 contentButton === null || contentButton === void 0
 	? void 0
-	: contentButton.addEventListener('click', async (e) => {
+	: contentButton.addEventListener('click', (e) => {
 			e.preventDefault();
-			let response = await axios.post('http://localhost:3000/post', {
-				title: contentTitle.value,
-				content: contentBox.value,
-				preview: postPreview.value,
-			});
-
-			console.log(response.data[0]);
-			localStorage.setItem('post', response.data[0].id);
-			window.location.href = '../pages/display.html';
+			axios
+				.post('http://localhost:3000/post', {
+					title: contentTitle.value,
+					content: contentBox.value,
+					preview: postPreview.value,
+				})
+				.then((response) => {
+					if ((response.status = 200)) {
+						error.style.display = 'block';
+						error.textContent = 'entry successful';
+						setTimeout(() => {
+							error.style.display = 'none';
+							console.log(response.data[0]);
+							localStorage.setItem('post', response.data[0].id);
+							window.location.href = '../pages/display.html';
+						}, 2000);
+					}
+				})
+				.catch((err) => {
+					error.style.display = 'block';
+					error.style.background = 'red';
+					error.textContent = `entry denied`;
+					console.log(err);
+					setTimeout(() => {
+						error.style.display = 'none';
+						window.location.reload();
+					}, 3000);
+				});
 	  });
-
 loginForm === null || loginForm === void 0
 	? void 0
 	: loginForm.addEventListener('submit', (e) => {
@@ -328,21 +325,20 @@ loginForm === null || loginForm === void 0
 			axios
 				.post(`${baseUrl}/login`, body)
 				.then((res) => {
-					console.log(error);
 					if ((res.status = 200)) {
-						error[0].style.display = 'block';
-						error[0].textContent = 'entry successful';
+						error.style.display = 'block';
+						error.textContent = 'entry successful';
 						setTimeout(() => {
-							error[0].style.display = 'none';
+							error.style.display = 'none';
 							window.localStorage.setItem('auth', `${res.data.token}`);
 							location.href = '../pages/index.html';
 						}, 2000);
 					}
 				})
 				.catch((err) => {
-					error[0].style.display = 'block';
-					error[0].style.background = 'red';
-					error[0].textContent = `entry denied`;
+					error.style.display = 'block';
+					error.style.background = 'red';
+					error.textContent = `entry denied`;
 					console.log(err);
 					setTimeout(() => {
 						error[0].style.display = 'none';
@@ -350,10 +346,6 @@ loginForm === null || loginForm === void 0
 					}, 3000);
 				});
 	  });
-
-const displayHandler = (event) => {
-	event.target;
-};
 
 logoutLink.addEventListener('click', (e) => {
 	localStorage.removeItem('auth');
@@ -372,9 +364,25 @@ loginDisplay === null || loginDisplay === void 0
 			axios
 				.post(`${baseUrl}/login`, body)
 				.then((res) => {
-					console.log('response:', res);
-					window.localStorage.setItem('auth', `${res.data.token}`);
-					location.href = '../pages/display.html';
+					if ((res.status = 200)) {
+						error.style.display = 'block';
+						error.textContent = 'post successful';
+						setTimeout(() => {
+							error.style.display = 'none';
+							window.localStorage.setItem('auth', `${res.data.token}`);
+							location.href = '../pages/display.html';
+						}, 2000);
+					}
+				})
+				.catch((err) => {
+					error.style.display = 'block';
+					error.style.background = 'red';
+					error.textContent = `post failed`;
+					console.log(err);
+					setTimeout(() => {
+						error.style.display = 'none';
+						window.location.reload();
+					}, 2000);
 				})
 				.catch((err) => console.log(err));
 	  });

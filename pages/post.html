@@ -44,25 +44,26 @@
 				</li>
 			</nav>
 		</header>
-		<form action="" id="post-form">
-			<div>
+		<main>
+			<form action="" id="post-form">
+				<div>
+					<div class="input-container">
+						<label for="content-title">title</label>
+						<input type="text" id="content-title" name="content-title"/>
+					</div>
+					<div class="input-container">
+						<label for="post-preview">preview</label>
+						<textarea type="text" id="post-preview" name="post-preview"></textarea>
+					</div>
 				<div class="input-container">
-					<label for="content-title">title</label>
-					<input type="text" id="content-title" name="content-title"/>
+					<label for="post-text">content</label>
+					<textarea name="post-content" id="post-text" name="post-text"></textarea>
 				</div>
-				<div class="input-container">
-					<label for="post-preview">preview</label>
-					<textarea type="text" id="post-preview" name="post-preview"></textarea>
-				</div>
-			<div class="input-container">
-				<label for="post-text">content</label>
-				<textarea name="post-content" id="post-text" name="post-text"></textarea>
 			</div>
-		</div>
-
-			<button id="content-button">Post</button>
-		</form>
-		<div class="error">Error</div>
+				<button id="content-button">Post</button>
+			</form>
+			<div class="error">Error</div>
+		</main>
 		<footer></footer>
 		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 		<script src="../static/index.js"></script>

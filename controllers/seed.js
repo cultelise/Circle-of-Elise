@@ -27,11 +27,11 @@ module.exports = {
 
   CREATE TABLE posts (
     id SERIAL PRIMARY KEY,
-    title VARCHAR(30),
+    title VARCHAR(30) NOT NULL,
     date DATE default CURRENT_DATE,
     time TIMESTAMP default CURRENT_TIMESTAMP,
-    preview TEXT,
-    content TEXT
+    preview TEXT NOT NULL,
+    content TEXT NOT NULL
   );
   
   CREATE TABLE tags (
