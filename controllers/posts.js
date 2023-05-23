@@ -36,9 +36,12 @@ module.exports = {
 		let { title, preview, tags, content } = req.body;
 		let query1 = `
 		INSERT INTO posts (title, preview, content)
-		VALUES	('${title}', '${preview}', '${content}')
+		VALUES	('${title}', '${preview}', '${content}');
+
+		SELECT * FROM posts
+		WHERE	title = '${title}';
 		`;
-		sequelize.query(query1).then((dbRes) => res.status(200).send(dbRes[0]));
+		sequelize.query(query1).then((dbRes) => res.status(201).send(dbRes[0]));
 		// tags.forEach((tag) => {
 		// 	let tagQuery1 = `
 		// 	SELECT FROM tags

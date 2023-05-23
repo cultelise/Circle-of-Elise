@@ -9,6 +9,18 @@ const postPreview = document.getElementById('post-preview');
 const loginForm = document.getElementById('login-form');
 const displayPage = document.getElementById('display-page');
 const baseUrl = 'http://localhost:3000';
+const signupLink = document.getElementById('signup-link');
+const loginLink = document.getElementById('login-link');
+const logoutLink = document.getElementById('logout-link');
+const postLink = document.getElementById('post-link');
+const loginDisplay = document.getElementById('login-display');
+
+if (localStorage.getItem('auth')) {
+	logoutLink.style.display = 'block';
+	postLink.style.display = 'block';
+	signupLink.style.display = 'none';
+	loginLink.style.display = 'none';
+}
 
 const getPosts = async () => {
 	let response = await axios.get(`${baseUrl}/posts`);
@@ -41,6 +53,7 @@ if (mainMain) {
 				button.appendChild(openEye);
 				button.appendChild(closedEye);
 
+				let textDiv = document.createElement('div');
 				let title = document.createElement('div');
 				title.id = `post-title-${i}`;
 				title.classList.add('title');
@@ -103,17 +116,15 @@ if (mainMain) {
 					: link.addEventListener('click', async (e) => {
 							let id = e.target.id;
 							let idNum = +id.charAt(id.length - 1);
-							console.log(e.target);
-							// let response1 = await axios.get(`${baseUrl}/display`);
-							// console.log(response1);
 							window.localStorage.setItem('post', `${idNum}`);
 							window.location.href = '../pages/display.html';
 					  });
 
 				card.appendChild(button);
 				title.appendChild(link);
-				card.appendChild(title);
-				card.appendChild(preview);
+				textDiv.appendChild(title);
+				textDiv.appendChild(preview);
+				card.appendChild(textDiv);
 				mainMain.appendChild(card);
 			}
 		}
@@ -128,46 +139,124 @@ if (displayPage) {
 		let id = +window.localStorage.getItem('post');
 		let response = await axios.get(`${baseUrl}/post/${id}`);
 		let post = response.data[0];
+
 		let postDiv = document.createElement('div');
 		postDiv.id = 'display-post';
-		let titleDiv = document.createElement('h1');
+
+		let titleDiv = document.createElement('div');
+		titleDiv.style.fontSize = '40px';
+		let dateDiv = document.createElement('div');
+		dateDiv.textContent = `${post.date}`;
+
 		let contentDiv = document.createElement('div');
-		let commentDiv = document.createElement('div');
-		let user = document.createElement('h3');
-		let commentContent = document.createElement('div');
-		console.log(post);
+		contentDiv.style.margin = '40px 0px 75px 0px';
+
+		let commentContainer = document.createElement('div');
+		commentContainer.id = 'comments';
+
+		let commentForm = document.createElement('form');
+		commentForm.id = 'comment-form';
+
+		let commentLabel = document.createElement('label');
+		commentLabel.textContent = 'Add a comment';
+
+		let commentInput = document.createElement('input');
+		commentInput.type = 'text';
+		commentInput.style.padding = '7px';
+
+		commentForm.appendChild(commentLabel);
+		commentForm.appendChild(commentInput);
+
+		commentForm.addEventListener('submit', (e) => {
+			e.preventDefault();
+			let token = window.localStorage.getItem('auth');
+			console.log('token:', token);
+			console.log('id:', id);
+			if (token) {
+				axios.post(
+					`${baseUrl}/comments/${id}`,
+					{ content: commentInput.value },
+					{
+						headers: {
+							authorization: `Bearer ${token}`,
+						},
+					}
+				);
+			}
+			setTimeout(location.reload(), 2000);
+		});
+		commentContainer.appendChild(commentForm);
+
+		let res = await axios.get(`${baseUrl}/comments/${id}`);
+		let comments = res.data;
+		comments.forEach((comment) => {
+			let commentDiv = document.createElement('div');
+
+			let dateDiv = document.createElement('div');
+			dateDiv.textContent = comment.date;
+			dateDiv.style.textDecoration = 'underline';
+
+			let usernameDiv = document.createElement('b');
+			usernameDiv.textContent = comment.username;
+			usernameDiv.style.fontSize = '20px';
+
+			let commentContent = document.createElement('div');
+
+			commentDiv.classList.add('comment');
+			commentContent.textContent = comment.content;
+
+			commentDiv.appendChild(dateDiv);
+			commentDiv.appendChild(usernameDiv);
+			commentDiv.appendChild(commentContent);
+			commentContainer.appendChild(commentDiv);
+		});
+
 		titleDiv.textContent = post.title;
 		contentDiv.textContent = post.content;
 
+		postDiv.appendChild(dateDiv);
 		postDiv.appendChild(titleDiv);
 		postDiv.appendChild(contentDiv);
+		postDiv.appendChild(commentContainer);
 		displayPage.appendChild(postDiv);
 	};
-	display();
+	if (localStorage.getItem('auth')) {
+		display();
+	} else {
+		let loginDisplay = document.getElementById('login-display');
+		loginDisplay.style.display = 'flex';
+	}
 }
 
 initForm === null || initForm === void 0
 	? void 0
-	: initForm.addEventListener('submit', async (event) => {
+	: initForm.addEventListener('submit', (event) => {
 			event.preventDefault();
-			await axios.post(`${baseUrl}/users`, {
-				username: initForm[0].value,
-				email: initForm[1].value,
-				password: initForm[2].value,
-			});
+			axios
+				.post(`${baseUrl}/users`, {
+					username: initForm[0].value,
+					email: initForm[1].value,
+					password: initForm[2].value,
+				})
+				.then((res) => {
+					console.log(res.data[0]);
+				});
+			window.location.href = '../pages/login.html';
 	  });
 
 contentButton === null || contentButton === void 0
 	? void 0
 	: contentButton.addEventListener('click', async (e) => {
 			e.preventDefault();
-			console.log(contentBox);
 			let response = await axios.post('http://localhost:3000/post', {
 				title: contentTitle.value,
 				content: contentBox.value,
 				preview: postPreview.value,
 			});
-			console.log(response.data);
+
+			console.log(response.data[0]);
+			localStorage.setItem('post', response.data[0].id);
+			window.location.href = '../pages/display.html';
 	  });
 
 loginForm === null || loginForm === void 0
@@ -182,7 +271,9 @@ loginForm === null || loginForm === void 0
 			axios
 				.post(`${baseUrl}/login`, body)
 				.then((res) => {
-					console.log(res);
+					console.log(res.data);
+					window.localStorage.setItem('auth', `${res.data.token}`);
+					location.href = '../pages/index.html';
 				})
 				.catch((err) => console.log(err));
 	  });
@@ -190,3 +281,27 @@ loginForm === null || loginForm === void 0
 const displayHandler = (event) => {
 	event.target;
 };
+
+logoutLink.addEventListener('click', (e) => {
+	localStorage.removeItem('auth');
+	location.href = '../pages/index.html';
+});
+
+loginDisplay === null || loginDisplay === void 0
+	? void 0
+	: loginDisplay.addEventListener('submit', (e) => {
+			e.preventDefault();
+			let body = {
+				username: loginDisplay[0].value,
+				password: loginDisplay[1].value,
+			};
+			console.log(body);
+			axios
+				.post(`${baseUrl}/login`, body)
+				.then((res) => {
+					console.log(res.data);
+					window.localStorage.setItem('auth', `${res.data.token}`);
+					location.href = '../pages/display.html';
+				})
+				.catch((err) => console.log(err));
+	  });

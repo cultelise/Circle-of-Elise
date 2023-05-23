@@ -15,8 +15,6 @@ const sequelize = new Sequelize(CONNECTION_STRING, {
 usersRouter.post('/', async (req, res) => {
 	const { username, email, password } = req.body;
 
-	console.log('reached');
-
 	const saltRounds = 10;
 	const passwordHash = await bcrypt.hash(password, saltRounds);
 
