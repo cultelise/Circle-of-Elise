@@ -294,7 +294,7 @@ contentButton === null || contentButton === void 0
 				.then((response) => {
 					if ((response.status = 200)) {
 						error.style.display = 'block';
-						error.textContent = 'entry successful';
+						error.textContent = 'post successful';
 						setTimeout(() => {
 							error.style.display = 'none';
 							console.log(response.data[0]);
@@ -306,7 +306,7 @@ contentButton === null || contentButton === void 0
 				.catch((err) => {
 					error.style.display = 'block';
 					error.style.background = 'red';
-					error.textContent = `entry denied`;
+					error.textContent = `post failed`;
 					console.log(err);
 					setTimeout(() => {
 						error.style.display = 'none';
@@ -341,7 +341,7 @@ loginForm === null || loginForm === void 0
 					error.textContent = `entry denied`;
 					console.log(err);
 					setTimeout(() => {
-						error[0].style.display = 'none';
+						error.style.display = 'none';
 						window.location.reload();
 					}, 3000);
 				});
@@ -366,7 +366,7 @@ loginDisplay === null || loginDisplay === void 0
 				.then((res) => {
 					if ((res.status = 200)) {
 						error.style.display = 'block';
-						error.textContent = 'post successful';
+						error.textContent = 'entry successful';
 						setTimeout(() => {
 							error.style.display = 'none';
 							window.localStorage.setItem('auth', `${res.data.token}`);
@@ -377,7 +377,7 @@ loginDisplay === null || loginDisplay === void 0
 				.catch((err) => {
 					error.style.display = 'block';
 					error.style.background = 'red';
-					error.textContent = `post failed`;
+					error.textContent = `entry denied`;
 					console.log(err);
 					setTimeout(() => {
 						error.style.display = 'none';
