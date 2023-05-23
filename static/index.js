@@ -14,6 +14,7 @@ const loginLink = document.getElementById('login-link');
 const logoutLink = document.getElementById('logout-link');
 const postLink = document.getElementById('post-link');
 const loginDisplay = document.getElementById('login-display');
+const error = document.getElementsByClassName('error');
 
 if (localStorage.getItem('auth')) {
 	logoutLink.style.display = 'block';
@@ -157,17 +158,21 @@ if (displayPage) {
 		let commentForm = document.createElement('form');
 		commentForm.id = 'comment-form';
 
-		let commentLabel = document.createElement('label');
-		commentLabel.textContent = 'Add a comment';
+		let commentLabel = document.createElement('a');
+		commentLabel.textContent = 'Create Comment';
+		commentLabel.style.marginTop = '10px';
+		commentLabel.style.fontWeight = 'bold';
+		commentLabel.style.fontStyle = 'underline';
 
-		let commentInput = document.createElement('input');
+		let commentInput = document.createElement('textarea');
+		commentInput.id = 'comment-input';
 		commentInput.type = 'text';
-		commentInput.style.padding = '7px';
 
-		commentForm.appendChild(commentLabel);
-		commentForm.appendChild(commentInput);
+		let commentButton = document.createElement('button');
+		commentButton.textContent = 'Submit';
+		commentButton.style.display = 'none';
 
-		commentForm.addEventListener('submit', (e) => {
+		commentButton.addEventListener('click', (e) => {
 			e.preventDefault();
 			let token = window.localStorage.getItem('auth');
 			console.log('token:', token);
@@ -183,33 +188,86 @@ if (displayPage) {
 					}
 				);
 			}
-			setTimeout(location.reload(), 2000);
+			setTimeout(location.reload(), 4000);
 		});
-		commentContainer.appendChild(commentForm);
+
+		commentLabel.addEventListener('click', () => {
+			commentInput.style.display = 'block';
+			commentButton.style.display = 'block';
+		});
+
+		commentForm.appendChild(commentLabel);
+		commentForm.appendChild(commentInput);
+		commentForm.appendChild(commentButton);
+
+		commentButton.addEventListener('submit', (e) => {
+			e.preventDefault();
+			let token = window.localStorage.getItem('auth');
+			console.log('token:', token);
+			console.log('id:', id);
+			if (token) {
+				axios.post(
+					`${baseUrl}/comments/${id}`,
+					{ content: commentInput.value },
+					{
+						headers: {
+							authorization: `Bearer ${token}`,
+						},
+					}
+				);
+			}
+			setTimeout(location.reload(), 4000);
+		});
+		const commentsLabel = document.createElement('div');
+		commentsLabel.textContent = 'Commentary';
+		commentsLabel.style.fontWeight = 'bold';
+		commentContainer.appendChild(commentsLabel);
 
 		let res = await axios.get(`${baseUrl}/comments/${id}`);
 		let comments = res.data;
-		comments.forEach((comment) => {
-			let commentDiv = document.createElement('div');
 
-			let dateDiv = document.createElement('div');
-			dateDiv.textContent = comment.date;
-			dateDiv.style.textDecoration = 'underline';
+		let count = 0;
 
-			let usernameDiv = document.createElement('b');
-			usernameDiv.textContent = comment.username;
-			usernameDiv.style.fontSize = '20px';
+		function displayComments(commentForm, commentContainer, comments) {
+			for (let i = count * 4 + 1; i < comments.length; i++) {
+				const comment = comments[i];
 
-			let commentContent = document.createElement('div');
+				let commentDiv = document.createElement('div');
 
-			commentDiv.classList.add('comment');
-			commentContent.textContent = comment.content;
+				let dateDiv = document.createElement('div');
+				dateDiv.textContent = comment.date;
+				dateDiv.style.textDecoration = 'underline';
 
-			commentDiv.appendChild(dateDiv);
-			commentDiv.appendChild(usernameDiv);
-			commentDiv.appendChild(commentContent);
-			commentContainer.appendChild(commentDiv);
-		});
+				let usernameDiv = document.createElement('b');
+				usernameDiv.textContent = comment.username;
+				usernameDiv.style.fontSize = '20px';
+
+				let commentContent = document.createElement('div');
+
+				commentDiv.classList.add('comment');
+				commentContent.textContent = comment.content;
+
+				let next = document.createElement('a');
+				next.textContent = 'next';
+				next.addEventListener('click', () => {
+					displayComments(commentForm, commentContainer, comments);
+				});
+
+				commentDiv.appendChild(dateDiv);
+				commentDiv.appendChild(usernameDiv);
+				commentDiv.appendChild(commentContent);
+				commentContainer.appendChild(commentDiv);
+				commentContainer.appendChild(next);
+				commentContainer.appendChild(commentForm);
+				if (i === i + 5) {
+					count++;
+					break;
+				}
+			}
+			return commentContainer;
+		}
+
+		commentContainer = displayComments(commentForm, commentContainer, comments);
 
 		titleDiv.textContent = post.title;
 		contentDiv.textContent = post.content;
@@ -267,15 +325,30 @@ loginForm === null || loginForm === void 0
 				username: loginForm[0].value,
 				password: loginForm[1].value,
 			};
-			console.log(body);
 			axios
 				.post(`${baseUrl}/login`, body)
 				.then((res) => {
-					console.log(res.data);
-					window.localStorage.setItem('auth', `${res.data.token}`);
-					location.href = '../pages/index.html';
+					console.log(error);
+					if ((res.status = 200)) {
+						error[0].style.display = 'block';
+						error[0].textContent = 'entry successful';
+						setTimeout(() => {
+							error[0].style.display = 'none';
+							window.localStorage.setItem('auth', `${res.data.token}`);
+							location.href = '../pages/index.html';
+						}, 2000);
+					}
 				})
-				.catch((err) => console.log(err));
+				.catch((err) => {
+					error[0].style.display = 'block';
+					error[0].style.background = 'red';
+					error[0].textContent = `entry denied`;
+					console.log(err);
+					setTimeout(() => {
+						error[0].style.display = 'none';
+						window.location.reload();
+					}, 3000);
+				});
 	  });
 
 const displayHandler = (event) => {
@@ -299,7 +372,7 @@ loginDisplay === null || loginDisplay === void 0
 			axios
 				.post(`${baseUrl}/login`, body)
 				.then((res) => {
-					console.log(res.data);
+					console.log('response:', res);
 					window.localStorage.setItem('auth', `${res.data.token}`);
 					location.href = '../pages/display.html';
 				})

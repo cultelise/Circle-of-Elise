@@ -4,6 +4,11 @@
 	background: black;
 }
 
+main {
+	display: flex;
+	flex-direction: column;
+}
+
 ::selection {
 	color: whitesmoke;
 	background: black;
@@ -117,8 +122,9 @@ header {
 }
 
 nav {
-	display: grid;
-	grid-template-columns: 1fr 1fr 1fr;
+	display: flex;
+	/* grid-template-columns: 1fr 1fr 1fr; */
+	justify-content: space-around;
 	list-style: none;
 	border-top: 1px solid black;
 	color: black;
@@ -137,8 +143,13 @@ nav {
 }
 
 button {
+	font-size: 20px;
+	border: 1px solid black;
+	border-radius: 5px;
 	background-color: inherit;
 	text-shadow: -0.5px 0.5px 1px silver;
+	margin-top: 10px;
+	padding: 3px 10px;
 }
 
 button:hover {
@@ -159,7 +170,8 @@ img {
 input {
 	border: 1px solid black;
 	border-radius: 5px;
-	width: 300px;
+	width: 230px;
+	padding: 5px 10px;
 }
 
 label {
@@ -174,6 +186,7 @@ label {
 }
 
 .post-button {
+	border: none;
 	text-align: center;
 	justify-self: center;
 	grid-row: 1 / 2;
@@ -200,6 +213,11 @@ label {
 	padding-bottom: 10px;
 }
 
+#post-preview {
+	border: 1px solid black;
+	width: 300px;
+	height: 100px;
+}
 #opaque-layer {
 	pointer-events: none;
 	transition: font-size 300ms, opacity 300ms;
@@ -207,7 +225,7 @@ label {
 
 /* Initiation Page */
 #initiation-form {
-	font-size: 40px;
+	font-size: 30px;
 	display: flex;
 	flex: 1;
 	flex-direction: column;
@@ -216,23 +234,32 @@ label {
 }
 
 #initiation-main {
-	margin: 100px calc(13%) 0px;
+	font-family: cursive;
+	margin: 50px calc(13%) 0px;
 	font-size: 30px;
 }
 
-#initiation-button {
-	font-size: 20px;
-	border: 1px solid black;
-	border-radius: 5px;
-	margin-top: 20px;
-}
-
 .dropdown-content {
-	display: none;
+	opacity: 0;
+	visibility: hidden;
 	position: absolute;
 	font-size: 15px;
 	min-width: 100px;
 	box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+	z-index: 1;
+	transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.dropdown-side-content {
+	opacity: 0;
+	visibility: hidden;
+	position: absolute;
+	left: 100%;
+	top: 0%;
+	min-width: 100px;
+	box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+	z-index: 1;
+	transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
 .dropdown-content a {
@@ -240,8 +267,16 @@ label {
 	display: block;
 }
 
-.dropdown:hover .dropdown-content {
-	display: block;
+.dropdown:hover .dropdown-content,
+.dropdown-content:hover {
+	opacity: 1;
+	visibility: visible;
+}
+
+.dropdown-content #duties:hover + .dropdown-side-content,
+.dropdown-side-content:hover {
+	opacity: 1;
+	visibility: visible;
 }
 
 #post-form {
@@ -259,8 +294,6 @@ label {
 }
 
 #post-text {
-	border: 1px solid black;
-	padding: 10px;
 	height: 400px;
 	width: 400px;
 }
@@ -275,18 +308,36 @@ label {
 #comments {
 	display: flex;
 	flex-direction: column;
-	gap: 10px;
+	gap: 15px;
 	padding: 10px;
+	text-align: center;
+	width: 40vw;
 }
 
 .comment {
 	border: 1px solid black;
 	padding: 10px;
+	text-align: left;
 }
 
 #comment-form {
 	display: flex;
 	flex-direction: column;
+	align-items: center;
+	gap: 5px;
+}
+
+#comment-input {
+	display: none;
+	border: 1px solid black;
+	width: 600px;
+	height: 200px;
+}
+
+textarea {
+	border: 1px solid black;
+	padding: 15px;
+	border-radius: 5px;
 }
 
 #logout-link,
@@ -301,7 +352,10 @@ label {
 }
 
 #login-display {
+	font-family: cursive;
 	display: none;
+	font-size: 30px;
+	margin-top: 50px;
 	flex-direction: column;
 	align-items: center;
 	gap: 10px;
@@ -313,4 +367,23 @@ label {
 	align-items: center;
 	gap: 10px;
 	margin-top: 50px;
+}
+
+.input-container {
+	font-family: 'Indie Flower', cursive;
+	font-size: 30px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin: 10px 0px;
+}
+
+.error {
+	display: none;
+	width: 60vw;
+	margin-top: 50px;
+	align-self: center;
+	text-align: center;
+	font-size: 40px;
+	background-color: rgb(0, 255, 0);
 }

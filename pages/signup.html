@@ -23,17 +23,22 @@
 			</div>
 
 			<nav class="unselectable">
-				<li class="dropdown">
-					<a href="">Records</a>
-					<div class="dropdown-content">
-						<a href="./signup.html" id="signup-link">Sign Up</a>
-						<a href="./login.html" id="login-link">Log In</a>
-						<a href="./index.html" id="logout-link">Log Out</a>
-					</div>
-				</li>
 				<li id="main-link">
 					<a href="./index.html">Main</a>
 				</li>
+				<li class="dropdown">
+					<a href="">Membership</a>
+					<div class="dropdown-content">
+						<a id="duties">Duties</a>
+						<div class="dropdown-side-content">
+							<a href="./login.html" id="login-link">Commence</a>
+							<a href="./index.html" id="logout-link">Suspend</a>
+						</div>
+						<a href="./signup.html" id="signup-link">Initiation</a>
+					</div>
+					</div>
+				</li>
+
 				<li id="post-link">
 					<a href="./post.html">Post</a>
 				</li>
@@ -41,14 +46,21 @@
 		</header>
 		<main id="initiation-main">
 			<form id="initiation-form">
-				<label for="codename" id="codename-label">Codename</label>
-				<input type="text" name="codename" id="codename" />
-				<label for="email" id="email-label">Email</label>
-				<input type="text" name="email" />
-				<label for="password" id="password-label">Password</label>
-				<input type="text" name="password" />
-				<button id="initiation-button">Submit</button>
+				<div class="input-container">
+					<label for="email" id="email-label">email</label>
+					<input type="text" name="email" />
+				</div>
+				<div class="input-container">
+					<label for="codename" id="codename-label">codename</label>
+					<input type="text" name="codename" id="codename" />
+				</div>
+				<div class="input-container">
+					<label for="password" id="password-label">password</label>
+					<input type="text" name="password" />
+				</div>
+				<button id="initiation-button">submit</button>
 			</form>
+			<div class="error">Error</div>
 		</main>
 		<footer></footer>
 		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>

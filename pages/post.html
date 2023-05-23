@@ -23,28 +23,46 @@
 			</div>
 
 			<nav class="unselectable">
-				<li class="dropdown">
-					<a href="">Records</a>
-					<div class="dropdown-content">
-						<a href="./signup.html" id="signup-link">Sign Up</a>
-						<a href="./login.html" id="login-link">Log In</a>
-						<a href="./index.html" id="logout-link">Log Out</a>
-					</div>
-				</li>
 				<li id="main-link">
 					<a href="./index.html">Main</a>
 				</li>
+				<li class="dropdown">
+					<a href="">Membership</a>
+					<div class="dropdown-content">
+						<a id="duties">Duties</a>
+						<div class="dropdown-side-content">
+							<a href="./login.html" id="login-link">Commence</a>
+							<a href="./index.html" id="logout-link">Suspend</a>
+						</div>
+						<a href="./signup.html" id="signup-link">Initiation</a>
+					</div>
+					</div>
+				</li>
+
 				<li id="post-link">
 					<a href="./post.html">Post</a>
 				</li>
 			</nav>
 		</header>
 		<form action="" id="post-form">
-			<input type="text" placeholder="Post Title" id="content-title" />
-			<input type="text" placeholder="Preview Text" id="post-preview" />
-			<textarea name="post-content" id="post-text"></textarea>
+			<div>
+				<div class="input-container">
+					<label for="content-title">title</label>
+					<input type="text" id="content-title" name="content-title"/>
+				</div>
+				<div class="input-container">
+					<label for="post-preview">preview</label>
+					<textarea type="text" id="post-preview" name="post-preview"></textarea>
+				</div>
+			<div class="input-container">
+				<label for="post-text">content</label>
+				<textarea name="post-content" id="post-text" name="post-text"></textarea>
+			</div>
+		</div>
+
 			<button id="content-button">Post</button>
 		</form>
+		<div class="error">Error</div>
 		<footer></footer>
 		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 		<script src="../static/index.js"></script>
