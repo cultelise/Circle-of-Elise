@@ -1,6 +1,5 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const commentRouter = require('express').Router();
 const { SECRET } = process.env;
 const { CONNECTION_STRING } = require('../utils/config');
 const Sequelize = require('sequelize');

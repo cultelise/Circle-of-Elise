@@ -25,9 +25,11 @@ loginRouter.post('/', async (req, res) => {
 	sequelize
 		.query(query)
 		.then(async (dbRes) => {
-			console.log(dbRes[0]);
 			let [user] = dbRes[0];
-			console.log('user:', user);
+
+			if (!user) {
+				return res.status(401).json({ error: 'invalid username' });
+			}
 
 			const passCorrect =
 				user === null ? false : await bcrypt.compare(password, user.password);

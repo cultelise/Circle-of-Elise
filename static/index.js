@@ -30,10 +30,9 @@ const getPosts = async () => {
 
 if (mainMain) {
 	const createPostCards = async () => {
-		for (let i = 1; i <= 3; i++) {
+		for (let i = 1; i <= 4; i++) {
 			let post = await getPosts();
 			post = post[i - 1];
-			console.log(post);
 			if (post) {
 				let card = document.createElement('div');
 				card.id = `card-${i}`;
@@ -141,13 +140,20 @@ if (displayPage) {
 		let response = await axios.get(`${baseUrl}/post/${id}`);
 		let post = response.data[0];
 
+		console.log('post:', post);
+
 		let postDiv = document.createElement('div');
 		postDiv.id = 'display-post';
 
 		let titleDiv = document.createElement('div');
 		titleDiv.style.fontSize = '40px';
+		titleDiv.style.textDecoration = 'underline';
 		let dateDiv = document.createElement('div');
 		dateDiv.textContent = `${post.date}`;
+
+		let authorDiv = document.createElement('div');
+		authorDiv.textContent = `by ${post.author}`;
+		authorDiv.style.fontSize = '20px';
 
 		let contentDiv = document.createElement('div');
 		contentDiv.style.margin = '40px 0px 75px 0px';
@@ -188,7 +194,9 @@ if (displayPage) {
 					}
 				);
 			}
-			setTimeout(location.reload(), 4000);
+			setTimeout(() => {
+				location.reload();
+			}, 2000);
 		});
 
 		commentLabel.addEventListener('click', () => {
@@ -216,10 +224,12 @@ if (displayPage) {
 					}
 				);
 			}
-			setTimeout(location.reload(), 4000);
+			setTimeout(() => {
+				location.reload();
+			}, 2000);
 		});
 		const commentsLabel = document.createElement('div');
-		commentsLabel.textContent = 'Commentary';
+		commentsLabel.textContent = 'Comments';
 		commentsLabel.style.fontWeight = 'bold';
 		commentContainer.appendChild(commentsLabel);
 
@@ -253,6 +263,7 @@ if (displayPage) {
 
 		postDiv.appendChild(dateDiv);
 		postDiv.appendChild(titleDiv);
+		postDiv.appendChild(authorDiv);
 		postDiv.appendChild(contentDiv);
 		postDiv.appendChild(commentContainer);
 		displayPage.appendChild(postDiv);
@@ -271,12 +282,15 @@ initForm === null || initForm === void 0
 			event.preventDefault();
 			axios
 				.post(`${baseUrl}/users`, {
-					username: initForm[0].value,
-					email: initForm[1].value,
+					email: initForm[0].value,
+					username: initForm[1].value,
 					password: initForm[2].value,
 				})
 				.then((res) => {
-					console.log(res.data[0]);
+					// if ((res.status = 201)) {
+					// 	error.style.display = 'block';
+					// 	error.textContent = 'signup successful';
+					// }
 				});
 			window.location.href = '../pages/login.html';
 	  });
@@ -285,12 +299,21 @@ contentButton === null || contentButton === void 0
 	? void 0
 	: contentButton.addEventListener('click', (e) => {
 			e.preventDefault();
+			let token = window.localStorage.getItem('auth');
 			axios
-				.post('http://localhost:3000/post', {
-					title: contentTitle.value,
-					content: contentBox.value,
-					preview: postPreview.value,
-				})
+				.post(
+					'http://localhost:3000/post',
+					{
+						title: contentTitle.value,
+						content: contentBox.value,
+						preview: postPreview.value,
+					},
+					{
+						headers: {
+							authorization: `Bearer ${token}`,
+						},
+					}
+				)
 				.then((response) => {
 					if ((response.status = 200)) {
 						error.style.display = 'block';

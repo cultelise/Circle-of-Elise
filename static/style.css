@@ -140,7 +140,7 @@ nav {
 }
 
 #display-post {
-	height: 500px;
+	height: 700px;
 }
 button {
 	font-size: 20px;
@@ -371,7 +371,7 @@ textarea {
 }
 
 .input-container {
-	font-family: 'Indie Flower', cursive;
+	font-family: cursive;
 	font-size: 30px;
 	display: flex;
 	flex-direction: column;
@@ -388,4 +388,12 @@ textarea {
 	text-align: center;
 	font-size: 40px;
 	background-color: rgb(0, 255, 0);
+}
+
+#init-link {
+	font-size: 30px;
+	font-weight: bold;
+	text-decoration: underline;
+	align-self: center;
+	margin: 30px 0px 5px 0px;
 }

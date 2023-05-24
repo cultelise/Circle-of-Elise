@@ -1,4 +1,5 @@
-const { CONNECTION_STRING } = require('../utils/config');
+const jwt = require('jsonwebtoken');
+const { CONNECTION_STRING, SECRET } = require('../utils/config');
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize(CONNECTION_STRING, {
 	dialect: 'postgres',
@@ -8,6 +9,15 @@ const sequelize = new Sequelize(CONNECTION_STRING, {
 		},
 	},
 });
+
+const getTokenFrom = (req) => {
+	const authorization = req.get('authorization');
+	console.log('Authorization:', authorization);
+	if (authorization && authorization.startsWith('Bearer ')) {
+		return authorization.replace('Bearer ', '');
+	}
+	return null;
+};
 
 module.exports = {
 	getPosts: (req, res) => {
@@ -34,14 +44,33 @@ module.exports = {
 
 	createPost: (req, res) => {
 		let { title, preview, tags, content } = req.body;
-		let query1 = `
-		INSERT INTO posts (title, preview, content)
-		VALUES	('${title}', '${preview}', '${content}');
+
+		console.log(SECRET);
+		const decodedToken = jwt.verify(getTokenFrom(req), SECRET);
+		if (!decodedToken.id) {
+			return response.status(401).json({ error: 'token invalid' });
+		}
+
+		sequelize
+			.query(
+				`
+    SELECT * FROM users
+    WHERE id = ${decodedToken.id}`
+			)
+			.then((dbRes) => {
+				console.log(dbRes[0][0].username);
+				let username = dbRes[0][0].username;
+				let query1 = `
+		INSERT INTO posts (title, author, preview, content)
+		VALUES	('${title}', '${username}', '${preview}', '${content}');
 
 		SELECT * FROM posts
 		WHERE	title = '${title}';
 		`;
-		sequelize.query(query1).then((dbRes) => res.status(201).send(dbRes[0]));
+				sequelize.query(query1).then((dbRes) => res.status(201).send(dbRes[0]));
+			})
+			.catch((err) => console.log(err));
+
 		// tags.forEach((tag) => {
 		// 	let tagQuery1 = `
 		// 	SELECT FROM tags
