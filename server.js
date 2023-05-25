@@ -7,7 +7,6 @@ const loginRouter = require('./controllers/login');
 const { getComments, postComment } = require('./controllers/comments');
 
 const { PORT } = require('./utils/config');
-console.log(PORT);
 
 app.use(cors());
 app.use(express.json());

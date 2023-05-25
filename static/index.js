@@ -14,6 +14,7 @@ const loginLink = document.getElementById('login-link');
 const logoutLink = document.getElementById('logout-link');
 const postLink = document.getElementById('post-link');
 const loginDisplay = document.getElementById('login-display');
+const error = document.getElementsByClassName('error')[0];
 
 if (localStorage.getItem('auth')) {
 	logoutLink.style.display = 'block';
@@ -29,10 +30,9 @@ const getPosts = async () => {
 
 if (mainMain) {
 	const createPostCards = async () => {
-		for (let i = 1; i <= 3; i++) {
+		for (let i = 1; i <= 4; i++) {
 			let post = await getPosts();
 			post = post[i - 1];
-			console.log(post);
 			if (post) {
 				let card = document.createElement('div');
 				card.id = `card-${i}`;
@@ -72,7 +72,6 @@ if (mainMain) {
 					: button.addEventListener('click', (e) => {
 							const target = e.target;
 							let button;
-							console.log(e.target);
 							if (target.id.includes('button')) {
 								button = e.target;
 							}
@@ -135,7 +134,6 @@ if (mainMain) {
 
 if (displayPage) {
 	const display = async () => {
-		console.log('on the display page');
 		let id = +window.localStorage.getItem('post');
 		let response = await axios.get(`${baseUrl}/post/${id}`);
 		let post = response.data[0];
@@ -145,8 +143,13 @@ if (displayPage) {
 
 		let titleDiv = document.createElement('div');
 		titleDiv.style.fontSize = '40px';
+		titleDiv.style.textDecoration = 'underline';
 		let dateDiv = document.createElement('div');
 		dateDiv.textContent = `${post.date}`;
+
+		let authorDiv = document.createElement('div');
+		authorDiv.textContent = `by ${post.author}`;
+		authorDiv.style.fontSize = '20px';
 
 		let contentDiv = document.createElement('div');
 		contentDiv.style.margin = '40px 0px 75px 0px';
@@ -157,21 +160,23 @@ if (displayPage) {
 		let commentForm = document.createElement('form');
 		commentForm.id = 'comment-form';
 
-		let commentLabel = document.createElement('label');
-		commentLabel.textContent = 'Add a comment';
+		let commentLabel = document.createElement('a');
+		commentLabel.textContent = 'Create Comment';
+		commentLabel.style.marginTop = '10px';
+		commentLabel.style.fontWeight = 'bold';
+		commentLabel.style.fontStyle = 'underline';
 
-		let commentInput = document.createElement('input');
+		let commentInput = document.createElement('textarea');
+		commentInput.id = 'comment-input';
 		commentInput.type = 'text';
-		commentInput.style.padding = '7px';
 
-		commentForm.appendChild(commentLabel);
-		commentForm.appendChild(commentInput);
+		let commentButton = document.createElement('button');
+		commentButton.textContent = 'Submit';
+		commentButton.style.display = 'none';
 
-		commentForm.addEventListener('submit', (e) => {
+		commentButton.addEventListener('click', (e) => {
 			e.preventDefault();
 			let token = window.localStorage.getItem('auth');
-			console.log('token:', token);
-			console.log('id:', id);
 			if (token) {
 				axios.post(
 					`${baseUrl}/comments/${id}`,
@@ -183,13 +188,46 @@ if (displayPage) {
 					}
 				);
 			}
-			setTimeout(location.reload(), 2000);
+			setTimeout(() => {
+				location.reload();
+			}, 2000);
 		});
-		commentContainer.appendChild(commentForm);
+
+		commentLabel.addEventListener('click', () => {
+			commentInput.style.display = 'block';
+			commentButton.style.display = 'block';
+		});
+
+		commentForm.appendChild(commentLabel);
+		commentForm.appendChild(commentInput);
+		commentForm.appendChild(commentButton);
+
+		commentButton.addEventListener('submit', (e) => {
+			e.preventDefault();
+			let token = window.localStorage.getItem('auth');
+			if (token) {
+				axios.post(
+					`${baseUrl}/comments/${id}`,
+					{ content: commentInput.value },
+					{
+						headers: {
+							authorization: `Bearer ${token}`,
+						},
+					}
+				);
+			}
+			setTimeout(() => {
+				location.reload();
+			}, 2000);
+		});
+		const commentsLabel = document.createElement('div');
+		commentsLabel.textContent = 'Comments';
+		commentsLabel.style.fontWeight = 'bold';
+		commentContainer.appendChild(commentsLabel);
 
 		let res = await axios.get(`${baseUrl}/comments/${id}`);
 		let comments = res.data;
-		comments.forEach((comment) => {
+		comments.forEach((comment, i) => {
 			let commentDiv = document.createElement('div');
 
 			let dateDiv = document.createElement('div');
@@ -210,12 +248,20 @@ if (displayPage) {
 			commentDiv.appendChild(commentContent);
 			commentContainer.appendChild(commentDiv);
 		});
+		commentContainer.appendChild(commentForm);
+
+		let previewDiv = document.createElement('p');
+		previewDiv.innerHTML = post.preview;
+		previewDiv.style.fontStyle = 'italic';
+		previewDiv.style.textDecoration = 'underline';
 
 		titleDiv.textContent = post.title;
-		contentDiv.textContent = post.content;
+		contentDiv.innerHTML = post.content;
 
 		postDiv.appendChild(dateDiv);
 		postDiv.appendChild(titleDiv);
+		postDiv.appendChild(authorDiv);
+		postDiv.appendChild(previewDiv);
 		postDiv.appendChild(contentDiv);
 		postDiv.appendChild(commentContainer);
 		displayPage.appendChild(postDiv);
@@ -232,33 +278,54 @@ initForm === null || initForm === void 0
 	? void 0
 	: initForm.addEventListener('submit', (event) => {
 			event.preventDefault();
-			axios
-				.post(`${baseUrl}/users`, {
-					username: initForm[0].value,
-					email: initForm[1].value,
-					password: initForm[2].value,
-				})
-				.then((res) => {
-					console.log(res.data[0]);
-				});
+			axios.post(`${baseUrl}/users`, {
+				email: initForm[0].value,
+				username: initForm[1].value,
+				password: initForm[2].value,
+			});
 			window.location.href = '../pages/login.html';
 	  });
 
 contentButton === null || contentButton === void 0
 	? void 0
-	: contentButton.addEventListener('click', async (e) => {
+	: contentButton.addEventListener('click', (e) => {
 			e.preventDefault();
-			let response = await axios.post('http://localhost:3000/post', {
-				title: contentTitle.value,
-				content: contentBox.value,
-				preview: postPreview.value,
-			});
-
-			console.log(response.data[0]);
-			localStorage.setItem('post', response.data[0].id);
-			window.location.href = '../pages/display.html';
+			let token = window.localStorage.getItem('auth');
+			axios
+				.post(
+					'http://localhost:3000/post',
+					{
+						title: contentTitle.value,
+						content: contentBox.value,
+						preview: postPreview.value,
+					},
+					{
+						headers: {
+							authorization: `Bearer ${token}`,
+						},
+					}
+				)
+				.then((response) => {
+					if ((response.status = 200)) {
+						error.style.display = 'block';
+						error.textContent = 'post successful';
+						setTimeout(() => {
+							error.style.display = 'none';
+							localStorage.setItem('post', response.data[0].id);
+							window.location.href = '../pages/index.html';
+						}, 2000);
+					}
+				})
+				.catch((err) => {
+					error.style.display = 'block';
+					error.style.background = 'red';
+					error.textContent = `post failed`;
+					setTimeout(() => {
+						error.style.display = 'none';
+						window.location.reload();
+					}, 2000);
+				});
 	  });
-
 loginForm === null || loginForm === void 0
 	? void 0
 	: loginForm.addEventListener('submit', (e) => {
@@ -267,20 +334,29 @@ loginForm === null || loginForm === void 0
 				username: loginForm[0].value,
 				password: loginForm[1].value,
 			};
-			console.log(body);
 			axios
 				.post(`${baseUrl}/login`, body)
 				.then((res) => {
-					console.log(res.data);
-					window.localStorage.setItem('auth', `${res.data.token}`);
-					location.href = '../pages/index.html';
+					if ((res.status = 200)) {
+						error.style.display = 'block';
+						error.textContent = 'entry successful';
+						setTimeout(() => {
+							error.style.display = 'none';
+							window.localStorage.setItem('auth', `${res.data.token}`);
+							location.href = '../pages/index.html';
+						}, 2000);
+					}
 				})
-				.catch((err) => console.log(err));
+				.catch((err) => {
+					error.style.display = 'block';
+					error.style.background = 'red';
+					error.textContent = `entry denied`;
+					setTimeout(() => {
+						error.style.display = 'none';
+						window.location.reload();
+					}, 2000);
+				});
 	  });
-
-const displayHandler = (event) => {
-	event.target;
-};
 
 logoutLink.addEventListener('click', (e) => {
 	localStorage.removeItem('auth');
@@ -295,13 +371,27 @@ loginDisplay === null || loginDisplay === void 0
 				username: loginDisplay[0].value,
 				password: loginDisplay[1].value,
 			};
-			console.log(body);
 			axios
 				.post(`${baseUrl}/login`, body)
 				.then((res) => {
-					console.log(res.data);
-					window.localStorage.setItem('auth', `${res.data.token}`);
-					location.href = '../pages/display.html';
+					if ((res.status = 200)) {
+						error.style.display = 'block';
+						error.textContent = 'entry successful';
+						setTimeout(() => {
+							error.style.display = 'none';
+							window.localStorage.setItem('auth', `${res.data.token}`);
+							location.href = '../pages/display.html';
+						}, 2000);
+					}
+				})
+				.catch((err) => {
+					error.style.display = 'block';
+					error.style.background = 'red';
+					error.textContent = `entry denied`;
+					setTimeout(() => {
+						error.style.display = 'none';
+						window.location.reload();
+					}, 2000);
 				})
 				.catch((err) => console.log(err));
 	  });
