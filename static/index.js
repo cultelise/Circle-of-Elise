@@ -312,7 +312,7 @@ contentButton === null || contentButton === void 0
 						setTimeout(() => {
 							error.style.display = 'none';
 							localStorage.setItem('post', response.data[0].id);
-							window.location.href = '../pages/display.html';
+							window.location.href = '../pages/index.html';
 						}, 2000);
 					}
 				})
@@ -323,7 +323,7 @@ contentButton === null || contentButton === void 0
 					setTimeout(() => {
 						error.style.display = 'none';
 						window.location.reload();
-					}, 3000);
+					}, 2000);
 				});
 	  });
 loginForm === null || loginForm === void 0
@@ -354,7 +354,7 @@ loginForm === null || loginForm === void 0
 					setTimeout(() => {
 						error.style.display = 'none';
 						window.location.reload();
-					}, 3000);
+					}, 2000);
 				});
 	  });
 
