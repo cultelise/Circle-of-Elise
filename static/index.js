@@ -72,7 +72,6 @@ if (mainMain) {
 					: button.addEventListener('click', (e) => {
 							const target = e.target;
 							let button;
-							console.log(e.target);
 							if (target.id.includes('button')) {
 								button = e.target;
 							}
@@ -135,12 +134,9 @@ if (mainMain) {
 
 if (displayPage) {
 	const display = async () => {
-		console.log('on the display page');
 		let id = +window.localStorage.getItem('post');
 		let response = await axios.get(`${baseUrl}/post/${id}`);
 		let post = response.data[0];
-
-		console.log('post:', post);
 
 		let postDiv = document.createElement('div');
 		postDiv.id = 'display-post';
@@ -181,8 +177,6 @@ if (displayPage) {
 		commentButton.addEventListener('click', (e) => {
 			e.preventDefault();
 			let token = window.localStorage.getItem('auth');
-			console.log('token:', token);
-			console.log('id:', id);
 			if (token) {
 				axios.post(
 					`${baseUrl}/comments/${id}`,
@@ -211,8 +205,6 @@ if (displayPage) {
 		commentButton.addEventListener('submit', (e) => {
 			e.preventDefault();
 			let token = window.localStorage.getItem('auth');
-			console.log('token:', token);
-			console.log('id:', id);
 			if (token) {
 				axios.post(
 					`${baseUrl}/comments/${id}`,
@@ -235,9 +227,7 @@ if (displayPage) {
 
 		let res = await axios.get(`${baseUrl}/comments/${id}`);
 		let comments = res.data;
-		console.log(comments);
 		comments.forEach((comment, i) => {
-			console.log(i);
 			let commentDiv = document.createElement('div');
 
 			let dateDiv = document.createElement('div');
@@ -288,18 +278,11 @@ initForm === null || initForm === void 0
 	? void 0
 	: initForm.addEventListener('submit', (event) => {
 			event.preventDefault();
-			axios
-				.post(`${baseUrl}/users`, {
-					email: initForm[0].value,
-					username: initForm[1].value,
-					password: initForm[2].value,
-				})
-				.then((res) => {
-					// if ((res.status = 201)) {
-					// 	error.style.display = 'block';
-					// 	error.textContent = 'signup successful';
-					// }
-				});
+			axios.post(`${baseUrl}/users`, {
+				email: initForm[0].value,
+				username: initForm[1].value,
+				password: initForm[2].value,
+			});
 			window.location.href = '../pages/login.html';
 	  });
 
@@ -328,7 +311,6 @@ contentButton === null || contentButton === void 0
 						error.textContent = 'post successful';
 						setTimeout(() => {
 							error.style.display = 'none';
-							console.log(response.data[0]);
 							localStorage.setItem('post', response.data[0].id);
 							window.location.href = '../pages/display.html';
 						}, 2000);
@@ -338,7 +320,6 @@ contentButton === null || contentButton === void 0
 					error.style.display = 'block';
 					error.style.background = 'red';
 					error.textContent = `post failed`;
-					console.log(err);
 					setTimeout(() => {
 						error.style.display = 'none';
 						window.location.reload();
@@ -370,7 +351,6 @@ loginForm === null || loginForm === void 0
 					error.style.display = 'block';
 					error.style.background = 'red';
 					error.textContent = `entry denied`;
-					console.log(err);
 					setTimeout(() => {
 						error.style.display = 'none';
 						window.location.reload();
@@ -391,7 +371,6 @@ loginDisplay === null || loginDisplay === void 0
 				username: loginDisplay[0].value,
 				password: loginDisplay[1].value,
 			};
-			console.log(body);
 			axios
 				.post(`${baseUrl}/login`, body)
 				.then((res) => {
@@ -409,7 +388,6 @@ loginDisplay === null || loginDisplay === void 0
 					error.style.display = 'block';
 					error.style.background = 'red';
 					error.textContent = `entry denied`;
-					console.log(err);
 					setTimeout(() => {
 						error.style.display = 'none';
 						window.location.reload();

@@ -26,7 +26,6 @@ usersRouter.post('/', async (req, res) => {
 	sequelize
 		.query(query)
 		.then((dbRes) => {
-			console.log(dbRes[0]);
 			res.sendStatus(201);
 		})
 		.catch((err) => console.log(err));

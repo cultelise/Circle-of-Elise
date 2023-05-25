@@ -14,7 +14,6 @@ const sequelize = new Sequelize(CONNECTION_STRING, {
 
 const getTokenFrom = (req) => {
 	const authorization = req.get('authorization');
-	console.log('Authorization:', authorization);
 	if (authorization && authorization.startsWith('Bearer ')) {
 		return authorization.replace('Bearer ', '');
 	}
@@ -23,9 +22,7 @@ const getTokenFrom = (req) => {
 
 module.exports = {
 	getComments: (req, res) => {
-		console.log(req.body);
 		const postId = req.params.id;
-		console.log('get params', req.params);
 		let query = `
     SELECT c.id, c.content, c.date, c.time, p.id, p.title, u.username
     FROM posts p
@@ -38,15 +35,12 @@ module.exports = {
 		sequelize
 			.query(query)
 			.then((dbRes) => {
-				console.log(dbRes[0]);
 				res.status(200).send(dbRes[0]);
 			})
 			.catch((err) => console.log(err));
 	},
 
 	postComment: async (req, res) => {
-		console.log('body:', req.body);
-		console.log('params:', req.params);
 		const postId = req.params.id;
 		const { content } = req.body;
 		const decodedToken = jwt.verify(getTokenFrom(req), SECRET);
@@ -61,7 +55,6 @@ module.exports = {
     WHERE id = ${decodedToken.id}`
 			)
 			.then((dbRes) => {
-				console.log('User Select:', dbRes[0]);
 				let userId = dbRes[0][0].id;
 
 				sequelize
@@ -77,7 +70,6 @@ module.exports = {
 					.then((dbRes) => {
 						console.log('Comments insert:', dbRes[0]);
 						let comment = dbRes[0][0];
-						console.log('comment:', comment);
 
 						sequelize
 							.query(
