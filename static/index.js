@@ -235,7 +235,9 @@ if (displayPage) {
 
 		let res = await axios.get(`${baseUrl}/comments/${id}`);
 		let comments = res.data;
-		comments.forEach((comment) => {
+		console.log(comments);
+		comments.forEach((comment, i) => {
+			console.log(i);
 			let commentDiv = document.createElement('div');
 
 			let dateDiv = document.createElement('div');
@@ -258,12 +260,18 @@ if (displayPage) {
 		});
 		commentContainer.appendChild(commentForm);
 
+		let previewDiv = document.createElement('p');
+		previewDiv.innerHTML = post.preview;
+		previewDiv.style.fontStyle = 'italic';
+		previewDiv.style.textDecoration = 'underline';
+
 		titleDiv.textContent = post.title;
-		contentDiv.textContent = post.content;
+		contentDiv.innerHTML = post.content;
 
 		postDiv.appendChild(dateDiv);
 		postDiv.appendChild(titleDiv);
 		postDiv.appendChild(authorDiv);
+		postDiv.appendChild(previewDiv);
 		postDiv.appendChild(contentDiv);
 		postDiv.appendChild(commentContainer);
 		displayPage.appendChild(postDiv);

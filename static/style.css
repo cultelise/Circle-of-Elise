@@ -122,6 +122,21 @@ header {
 	padding-bottom: 5px;
 }
 
+#name-6 {
+	font-size: 50px;
+	display: flex;
+	align-items: center;
+	padding-bottom: 5px;
+}
+
+#name-7 {
+	color: blueviolet;
+}
+
+#space {
+	width: 75px;
+}
+
 nav {
 	display: flex;
 	justify-content: space-around;
@@ -142,6 +157,11 @@ nav {
 #display-post {
 	height: 700px;
 }
+
+#loom-companion-mv3 {
+	display: none;
+}
+
 button {
 	font-size: 20px;
 	border: 1px solid black;
